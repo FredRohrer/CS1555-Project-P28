@@ -1,7 +1,10 @@
 --schema.sql
 
+--drop tables if they exist up here
 
 drop table MemberLevel cascade constraints;
+drop table Customer cascade constraints;
+drop table Purchase cascade constraints;
 
 create table MemberLevel (
 	MemberLevel_ID int,
@@ -9,8 +12,6 @@ create table MemberLevel (
 	Booster_Factor float,
 	constraint MemberLever_pk primary key (MemberLevel_ID)
 );
-
-drop table Customer cascade constraints;
 
 create table Customer (
 	Customer_ID int, 
@@ -23,8 +24,6 @@ create table Customer (
 	constraint Customer_fk_MemberLevel foreign key (MemberLevel_ID) 
 		references MemberLevel(MemberLevel_ID)
 ); --I need to add a trigger
-
-drop table Purchase cascade constraints;
 
 create table Purchase(
 	Purchase_ID int,
