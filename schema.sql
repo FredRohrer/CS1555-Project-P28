@@ -11,6 +11,19 @@ drop table HasPromotion cascade constraints;
 drop table PromoteFor cascade constraints;
 drop table BuyCoffee cascade constraints;
 
+drop table Store cascade constraints;
+drop table OfferCoffee cascade constraints;
+
+create table Store(
+	Store_ID int,
+	Name varchar2(20),
+	Address varchar2(20),
+	Store_Type varchar2(20),
+	GPS_Long float,
+	GPS_Lat float,
+	constraint Store_pk primary key (Store_ID)
+);
+
 create table Coffee (
 	Coffee_ID int,
 	Name varchar2(20),
@@ -61,6 +74,16 @@ create table Purchase (
 		references Customer(Customer_ID)--,
 	--constraint Purchase_fk_Store foreign key (Store_ID)
 	--	references Store(Store_ID)
+);
+
+create table OfferCoffee (
+	Store_ID int,
+	Coffee_ID int,
+	constraint OfferCoffee_pk primary key (Store_ID, Coffee_ID),
+	constraint OfferCoffee_store_fk foreign key (Store_ID)
+		references Store(Store_ID),
+	constraint OfferCoffee_coffee_fk foreign key (Coffee_ID)
+		references Coffee(Coffee_ID)
 );
 
 create table HasPromotion (
