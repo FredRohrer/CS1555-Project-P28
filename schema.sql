@@ -72,8 +72,8 @@ create table Purchase (
 	constraint Purchase_pk primary key (Purchase_ID),
 	constraint Purchase_fk_Customer foreign key (Customer_ID)
 		references Customer(Customer_ID)--,
-	--constraint Purchase_fk_Store foreign key (Store_ID)
-	--	references Store(Store_ID)
+	constraint Purchase_fk_Store foreign key (Store_ID)
+		references Store(Store_ID)
 );
 
 create table OfferCoffee (
@@ -90,8 +90,8 @@ create table HasPromotion (
 	Store_ID int,
 	Promotion_ID int,
 	constraint HasPromotion_pk primary key (Store_ID, Promotion_ID),
-	--constraint HasPromotion_Store_fk foreign key (Store_ID)
-	--	references Store(Store_ID),
+	constraint HasPromotion_Store_fk foreign key (Store_ID)
+		references Store(Store_ID),
 	constraint HasPromotion_Promo_fk foreign key (Promotion_ID)
 		references Promotion(Promotion_ID)
 );
@@ -102,8 +102,8 @@ create table PromoteFor (
 	constraint PromoteFor_pk primary key (Promotion_ID, Coffee_ID),
 	constraint PromoteFor_Promo_fk foreign key (Promotion_ID)
 		references Promotion(Promotion_ID)--,
-	--constraint PromoteFor_Cof_fk foreign key (Coffee_ID)
-	--	references Coffee(Coffee_ID)
+	constraint PromoteFor_Cof_fk foreign key (Coffee_ID)
+		references Coffee(Coffee_ID)
 );
 
 create table BuyCoffee (
@@ -114,7 +114,7 @@ create table BuyCoffee (
 	constraint BuyCoffee_pk primary key (Purchase_ID, Coffee_ID),
 	constraint BuyCoffee_Purch_fk foreign key (Purchase_ID)
 		references Purchase(Purchase_ID)--,
-	--constraint BuyCoffee_Cof_fk foreign key (Coffee_ID)
-	--	references Coffee(Coffee_ID)
+	constraint BuyCoffee_Cof_fk foreign key (Coffee_ID)
+		references Coffee(Coffee_ID)
 );
 
