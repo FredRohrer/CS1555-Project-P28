@@ -71,7 +71,7 @@ create table Purchase (
 	Purchase_Time date,
 	constraint Purchase_pk primary key (Purchase_ID),
 	constraint Purchase_fk_Customer foreign key (Customer_ID)
-		references Customer(Customer_ID)--,
+		references Customer(Customer_ID),
 	constraint Purchase_fk_Store foreign key (Store_ID)
 		references Store(Store_ID)
 );
@@ -101,7 +101,7 @@ create table PromoteFor (
 	Coffee_ID int, 
 	constraint PromoteFor_pk primary key (Promotion_ID, Coffee_ID),
 	constraint PromoteFor_Promo_fk foreign key (Promotion_ID)
-		references Promotion(Promotion_ID)--,
+		references Promotion(Promotion_ID),
 	constraint PromoteFor_Cof_fk foreign key (Coffee_ID)
 		references Coffee(Coffee_ID)
 );
@@ -113,7 +113,7 @@ create table BuyCoffee (
 	Redeem_Quantity int,
 	constraint BuyCoffee_pk primary key (Purchase_ID, Coffee_ID),
 	constraint BuyCoffee_Purch_fk foreign key (Purchase_ID)
-		references Purchase(Purchase_ID)--,
+		references Purchase(Purchase_ID),
 	constraint BuyCoffee_Cof_fk foreign key (Coffee_ID)
 		references Coffee(Coffee_ID)
 );
