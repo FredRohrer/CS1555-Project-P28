@@ -4,6 +4,7 @@
 
 --query.sql
 
+--done phase 1
 --Sequences
 DROP SEQUENCE Store_seq;
 DROP SEQUENCE Coffee_seq;

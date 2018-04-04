@@ -1,5 +1,5 @@
 --schema.sql
-
+--done Phase 1
 --drop tables if they exist up here
 drop table Coffee cascade constraints;
 drop table Promotion cascade constraints;

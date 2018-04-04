@@ -1,4 +1,5 @@
 --trigger.sql
+--done?
 
 create or replace function Get_Coffee_Promoted
 (coffeeID in int, storeID in int, cur_date in date)
