@@ -1,33 +1,107 @@
+
+--Generate the data to represent at least 3
+--stores, 20 customer and 50 purchases.
+
 --query.sql
 
 --insert stores
-INSERT INTO Store VALUES (Store_seq.NEXTVAL, "Store 1", "Dollar Store", 
-			  10.4, 20.9);
-INSERT INTO Store VALUES (Store_seq.NEXTVAL, "Store 2", "Supermaket", 
-			   2342.34, 232.32);
-INSERT INTO Store VALUES (Store_seq.NEXTVAL, "Store 3", "Coffee shop", 
-			  15.88, 20.5);
+INSERT INTO STORE VALUES(Store_seq.NEXTVAL, 'BCoffee Oakland', '4022 Fifth Ave', 'Full Service', 73.984559, 40.748440);
+INSERT INTO STORE VALUES(Store_seq.NEXTVAL, 'BCoffee Shadyside', '4022 Highland Ave', 'Express', 75.984559, 32.748440);
+INSERT INTO STORE VALUES(Store_seq.NEXTVAL, 'BCoffee Bloomfield', '4022 Liberty Ave', 'Full Service', 83.984559, 22.748440);
+
+--insert into MemberLevels
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'John',  1);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'Jack',  1.2);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'Victor',  1.6);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'Louis',  1);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'Robert',  1.2);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'Mat',  1.6);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'Alex',  1);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'Jeff',  1.2);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'Joseph',  1.6);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'John',  1);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'Jane',  1.2);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'John',  1.6);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'Mary',  1);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'Foo',  1.2);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'George',  1.6);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'Bill',  1);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'Donald',  1.2);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'John',  1.6);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'Bill',  1);
+INSERT INTO MemberLevel VALUES (MemberLevel_seq.NEXTVAL, 'Antonio',  1);
 
 --insert into customers
-INSERT INTO Customer VALUES (Customer_seq.NEXTVAL, "John", "Smith", null, 
-			     MemberLevel_seq.NEXTVAL, 0);
-INSERT INTO Customer VALUES (Customer_seq.NEXTVAL, "Jane", "Doe", null, 
-			     MemberLevel_seq.NEXTVAL, 0);
-INSERT INTO Customer VALUES (Customer_seq.NEXTVAL, "John", "Doe", null,
-			     MemberLevel_seq.NEXTVAL, 0);
-INSERT INTO Customer VALUES (Custmer_seq.NEXTVAL, "Mary", "Jane", null, 
-			     MemberLevel_seq.NEXTVAL, 0);
-INSERT INTO Customer VALUES (Customer_seq.NEXTVAL, "Foo", "Bar", null,
-			     MemberLevel_seq.NEXTVAL, 0);
-INSERT INTO Customer VALUES (Customer_seq.NEXTVAL, "George", "Bush", null,
-			     MemberLevel_seq.NEXTVAL, 0);
-INSERT INTO Customer VALUES (Customer_seq.NEXTVAL, "Bill", "Clinton", null,
-			     MemberLevel_seq.NEXTVAL, 0);
-INSERT INTO Customer VALUES (Customer_seq.NEXTVAL, "Donald", "Trump", null, 
-			     MemberLevel_seq.NEXTVAL, 1000000);
-INSERT INTO Customer VALUES (Customer_seq.NEXTVAL, "John", "Kennedy", null,
-			     MemberLevel_seq.NEXTVAL, 25);
-INSERT INTO Customer VALUES (Customer_seq.NEXTVAL, "Bill", "Kennedy", null,
-			     MemberLevel_seq.NEXTVAL, 99);
-INSERT INTO Customer VALUES (Customer_seq.NEXTVAL, "Antonio", "Brown", null,
-			     MemberLevel_seq.NEXTVAL, 101010);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'John', 'Doe', 'jv@coffee.com',  1, 0.0);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'Jack', 'Smith', 'jb@coffee.com',  2, 100.0);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'Victor', 'Won', 'vw@coffee.com',  3, 30.0);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'Louis', 'Green', null,  4, 100);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'Robert', 'Grey', null,  5, 300);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'Mat', 'Brown', null,  6, 50);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'Alex', 'Bar', null,  7, 320);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'Jeff', 'Trump', null,  8, 23);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'Joseph', 'Kennedy', null,  9, 2);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'John', 'Smith', null,  10, 0);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'Jane', 'Doe', null,  11, 0);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'John', 'Doe', null, 12, 0);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'Mary', 'Jane', null,  13, 0);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'Foo', 'Bar', null, 14, 0);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'George', 'Bush', null, 15, 0);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'Bill', 'Clinton', null, 16, 0);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'Donald', 'Trump', null,  17, 1000000);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'John', 'Kennedy', null, 18, 25);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'Bill', 'Kennedy', null, 19, 99);
+INSERT INTO CUSTOMER VALUES (Customer_seq.NEXTVAL, 'Antonio', 'Brown', null, 20, 101010);
+
+--inserto into purchases
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 1, 1, to_date('10-JAN-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 2, 2, to_date('10-FEB-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 3, 3, to_date('12-FEB-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 4, 1, to_date('1-FEB-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 5, 1, to_date('2-FEB-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 6, 1, to_date('3-FEB-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 7, 2, to_date('4-FEB-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 8, 2, to_date('5-FEB-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 9, 1, to_date('6-FEB-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 10, 1, to_date('1-MAR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 11, 3, to_date('2-MAR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 12, 3, to_date('3-MAR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 13, 3, to_date('10-MAR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 14, 1, to_date('4-MAR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 15, 2, to_date('5-MAR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 16, 3, to_date('6-MAR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 17, 1, to_date('7-MAR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 18, 1, to_date('8-MAR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 19, 3, to_date('9-JAN-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 20, 1, to_date('1-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 20, 1, to_date('2-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 1, 2, to_date('3-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 2, 1, to_date('4-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 3, 2, to_date('10-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 4, 3, to_date('10-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 5, 1, to_date('10-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 2, 1, to_date('10-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 3, 2, to_date('11-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 2, 2, to_date('11-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 1, 2, to_date('11-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 15, 1, to_date('11-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 14, 2, to_date('11-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 10, 3, to_date('11-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 11, 1, to_date('12-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 6, 1, to_date('12-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 7, 3, to_date('12-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 8, 3, to_date('12-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 9, 1, to_date('12-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 10, 2, to_date('13-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 19, 1, to_date('13-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 20, 2, to_date('13-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 20, 2, to_date('13-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 1, 2, to_date('13-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 1, 1, to_date('14-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 2, 1, to_date('14-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 2, 3, to_date('14-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 3, 3, to_date('14-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 3, 3, to_date('14-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 4, 1, to_date('14-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+INSERT INTO PURCHASE VALUES (Purchase_seq.NEXTVAL, 4, 1, to_date('14-APR-2017 09:00:00', 'DD-MON-YYYY HH24:MI:SS'));
+
