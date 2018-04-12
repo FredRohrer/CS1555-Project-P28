@@ -38,6 +38,25 @@ public class BoutiqueCoffee {
   
   
   public int addStore(String name, String address, String storeType, double gpsLong, double gpsLat) {
+	statement.setAutoCommit(false);
+	//not sure what the isolation should be for this one
+	//probably not that serious
+	//connection.setTransactionIsolation(?????);
+	
+	
+	//statement = connection.createStatement();
+	
+	String query = "insert into STORE values(Store_seq.NEXTVAL, ?, ?, ?, ?, ?);";
+	//not sure how to deal with the store id
+	PreparedStatement insertStatement = connection.prepareStatement(query);
+	insertStatement.setString(2, name);
+	insertStatement.setString(3, address);
+	insertStatement.setString(4, storeType);
+	insertStatement.setDouble(gpsLong);
+	insertStatement.setDouble(gpsLat);
+	
+	insertStatement.executeInsert();
+	
     return -1;
   }
 
