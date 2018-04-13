@@ -14,6 +14,13 @@ drop table BuyCoffee cascade constraints;
 drop table Store cascade constraints;
 drop table OfferCoffee cascade constraints;
 
+DROP SEQUENCE Store_seq;
+DROP SEQUENCE Coffee_seq;
+DROP SEQUENCE Promotion_seq;
+DROP SEQUENCE MemberLevel_seq;
+DROP SEQUENCE Customer_seq;
+DROP SEQUENCE Purchase_seq;
+
 create table Store(
 	Store_ID int,
 	Name varchar2(20),
@@ -118,3 +125,44 @@ create table BuyCoffee (
 		references Coffee(Coffee_ID)
 );
 
+CREATE SEQUENCE Store_seq
+	MINVALUE 1
+	MAXVALUE 9999999
+	START WITH 1
+	INCREMENT BY 1
+	CACHE 20;
+
+CREATE SEQUENCE Coffee_seq
+	MINVALUE 1
+	MAXVALUE 9999999
+	START WITH 1
+	INCREMENT BY 1
+	CACHE 20;
+
+CREATE SEQUENCE Promotion_seq
+	MINVALUE 1
+	MAXVALUE 9999999
+	START WITH 1
+	INCREMENT BY 1
+	CACHE 20;
+
+CREATE SEQUENCE MemberLevel_seq
+	MINVALUE 1
+	MAXVALUE 9999999
+	START WITH 1
+	INCREMENT BY 1
+	CACHE 20;
+
+CREATE SEQUENCE Customer_seq
+	MINVALUE 1
+	MAXVALUE 9999999
+	START WITH 1
+	INCREMENT BY 1
+	CACHE 20;
+
+CREATE SEQUENCE Purchase_seq
+	MINVALUE 1
+	MAXVALUE 9999999
+	START WITH 1
+	INCREMENT BY 1
+	CACHE 20;
