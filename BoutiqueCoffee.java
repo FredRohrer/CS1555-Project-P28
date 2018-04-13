@@ -64,28 +64,111 @@ public class BoutiqueCoffee {
     return -1;
   }
 
-  public int offerCoffee(int storeId, int coffeeId) {
-    return -1;
+  public int offerCoffee(int storeId, int coffeeId) throws SQLException {
+    String query = "insert into OfferCoffee values(?. ?);";
+
+    PreparedStatement insertStatement = connection.prepareStatement(query);
+    insertStatement.setInt(1, storeId);
+    insertStatement.setInt(2, coffeeId);
+    if(insertStatement.executeUpdate() > 0)
+        return 1;
+    else
+        return -1;
   }
 
-  public int addPromotion(String name, Date startDate, Date endDate) {
-    return -1;
+  public int addPromotion(String name, Date startDate, Date endDate) throws SQLException {
+      String query = "SELECT Promotion_seq.NEXTVAL from dual";
+      PreparedStatement insertStatement = connection.prepareStatement(query);
+      ResultSet rs = insertStatement.executeQuery();
+
+      if(rs.next()){
+          int promoseq = rs.getInt(1);
+          query = "insert into Promotion values(?, ?, ?, ?);";
+
+          insertStatement = connection.prepareStatement(query);
+          insertStatement.setInt(1, promoseq);
+          insertStatement.setString(2, name);
+          insertStatement.setDate(3, (java.sql.Date) startDate);
+          insertStatement.setDate(4, (java.sql.Date) endDate);
+
+          if(insertStatement.executeUpdate() > 0)
+              return promoseq;
+          else
+              return -1;
+      }
+      else
+          return -1;
   }
 
-  public int promoteFor(int promotionId, int coffeeId) {
-    return -1;
+  public int promoteFor(int promotionId, int coffeeId) throws SQLException {
+      String query = "insert into PromoteFor values(?, ?);";
+      PreparedStatement insertStatement = connection.prepareStatement(query);
+      insertStatement.setInt(1, promotionId);
+      insertStatement.setInt(2, coffeeId);
+      if(insertStatement.executeUpdate() > 0)
+          return 1;
+      else
+          return -1;
   }
 
-  public int hasPromotion(int storeId, int promotionId) {
-    return -1;
+  public int hasPromotion(int storeId, int promotionId) throws SQLException {
+      String query = "insert into HasPromotion values(?, ?);";
+      PreparedStatement insertStatement = connection.prepareStatement(query);
+      insertStatement.setInt(1, storeId);
+      insertStatement.setInt(2, promotionId);
+      if(insertStatement.executeUpdate() > 0)
+          return 1;
+      else
+          return -1;
   }
 
-  public int addMemberLevel(String name, double boosterFactor) {
-    return -1;
+  public int addMemberLevel(String name, double boosterFactor) throws SQLException {
+      String query = "SELECT MemberLevel_seq.NEXTVAL from dual";
+      PreparedStatement insertStatement = connection.prepareStatement(query);
+      ResultSet rs = insertStatement.executeQuery();
+
+      if(rs.next()){
+          int memberseq = rs.getInt(1);
+          query = "insert into MemberLevel values(?, ?, ?);";
+
+          insertStatement = connection.prepareStatement(query);
+          insertStatement.setInt(1, memberseq);
+          insertStatement.setString(2, name);
+          insertStatement.setFloat(3, (float) boosterFactor);
+
+          if(insertStatement.executeUpdate() > 0)
+              return memberseq;
+          else
+              return -1;
+      }
+      else
+          return -1;
   }
 
-  public int addCustomer(String firstName, String lastName, String email, int memberLevelId, double totalPoints) {
-    return -1;
+  public int addCustomer(String firstName, String lastName, String email, int memberLevelId, double totalPoints) throws SQLException {
+      String query = "SELECT Customer_seq.NEXTVAL from dual";
+      PreparedStatement insertStatement = connection.prepareStatement(query);
+      ResultSet rs = insertStatement.executeQuery();
+
+      if(rs.next()){
+          int customerseq = rs.getInt(1);
+          query = "insert into MemberLevel values(?, ?, ?, ?, ?, ?);";
+
+          insertStatement = connection.prepareStatement(query);
+          insertStatement.setInt(1, customerseq);
+          insertStatement.setString(2, firstName);
+          insertStatement.setString(3, lastName);
+          insertStatement.setString(4, email);
+          insertStatement.setInt(5, memberLevelId);
+          insertStatement.setFloat(6, (float) totalPoints);
+
+          if(insertStatement.executeUpdate() > 0)
+              return customerseq;
+          else
+              return -1;
+      }
+      else
+          return -1;
   }
 
   public int addPurchase(int customerId, int storeId, Date purchaseTime, List<Integer> coffeeIds, List<Integer> purchaseQuantities, List<Integer> redeemQuantities) {
