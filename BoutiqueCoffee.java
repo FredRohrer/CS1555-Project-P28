@@ -419,11 +419,10 @@ public class BoutiqueCoffee {
 
     public List<Integer> getTopKStoresInPastXMonth(int k, int x) {
         int days = x * 30;
-        String query = "SELECT CURRENT_DATEL FROM dual";
-        PreparedStatement insertStatement = null;
+        String query = "SELECT CURRENT_DATE FROM dual";
 
         try {
-            insertStatement = connection.prepareStatement(query);
+            PreparedStatement insertStatement = connection.prepareStatement(query);
             ResultSet rs = insertStatement.executeQuery();
 
             if (rs.next()) {
@@ -434,12 +433,12 @@ public class BoutiqueCoffee {
                 java.util.Date past = cal.getTime();
 
                 query = "SELECT Store_Id FROM (" +
-                        "SELECT SUM(Price*Purchase_Quantity) FROM (" +
+                        "SELECT Store_Id, SUM(Price*Purchase_Quantity) FROM (" +
                         "SELECT * FROM Coffee NATURAL JOIN (" +
                         "SELECT * FROM BuyCoffee NATURAL JOIN (" +
                         "SELECT * FROM Purchase WHERE Purchase_Time BETWEEN ? AND CURRENT_DATE)))" +
                         "GROUP BY Store_ID)" +
-                        "ORDER BY val DESC " +
+                        "ORDER BY Store_ID DESC " +
                         "FETCH FIRST ? ROWS WITH TIES";
 
                 insertStatement = connection.prepareStatement(query);
@@ -447,19 +446,25 @@ public class BoutiqueCoffee {
                 insertStatement.setInt(2, k);
 
                 rs = insertStatement.executeQuery();
-
+                
                 if(rs.next()){
-                    ArrayList<Integer> stores = new ArrayList<>();
+                    List<Integer> stores = new ArrayList<Integer>();
                     while (rs.next()){
                         stores.add(rs.getInt(1));
                     }
+                    insertStatement.close();
+                    rs.close();
                     return stores;
                 }
                 else {
+                    insertStatement.close();
+                    rs.close();
                     return new ArrayList<Integer>();
                 }
 
             } else {
+                insertStatement.close();
+                rs.close();
                 return new ArrayList<Integer>();
             }
         } catch (SQLException e) {
@@ -470,11 +475,10 @@ public class BoutiqueCoffee {
 
     public List<Integer> getTopKCustomersInPastXMonth(int k, int x) {
         int days = x * 30;
-        String query = "SELECT CURRENT_DATEL FROM dual";
-        PreparedStatement insertStatement = null;
+        String query = "SELECT CURRENT_DATE FROM dual";
 
         try {
-            insertStatement = connection.prepareStatement(query);
+            PreparedStatement insertStatement = connection.prepareStatement(query);
             ResultSet rs = insertStatement.executeQuery();
 
             if (rs.next()) {
@@ -485,12 +489,12 @@ public class BoutiqueCoffee {
                 java.util.Date past = cal.getTime();
 
                 query = "SELECT Customer_Id FROM (" +
-                        "SELECT SUM(Price*Purchase_Quantity) FROM (" +
+                        "SELECT Customer_Id, SUM(Price*Purchase_Quantity) FROM (" +
                         "SELECT * FROM Coffee NATURAL JOIN (" +
                         "SELECT * FROM BuyCoffee NATURAL JOIN (" +
                         "SELECT * FROM Purchase WHERE Purchase_Time BETWEEN ? AND CURRENT_DATE)))" +
-                        "GROUP BY Customer_ID)" +
-                        "ORDER BY val DESC " +
+                        "GROUP BY Customer_Id)" +
+                        "ORDER BY Customer_Id DESC " +
                         "FETCH FIRST ? ROWS WITH TIES";
 
                 insertStatement = connection.prepareStatement(query);
@@ -500,17 +504,23 @@ public class BoutiqueCoffee {
                 rs = insertStatement.executeQuery();
 
                 if(rs.next()){
-                    ArrayList<Integer> stores = new ArrayList<>();
+                    List<Integer> stores = new ArrayList<Integer>();
                     while (rs.next()){
                         stores.add(rs.getInt(1));
                     }
+                    insertStatement.close();
+                    rs.close();
                     return stores;
                 }
                 else {
+                    insertStatement.close();
+                    rs.close();
                     return new ArrayList<Integer>();
                 }
 
             } else {
+                rs.close();
+                insertStatement.close();
                 return new ArrayList<Integer>();
             }
         } catch (SQLException e) {
