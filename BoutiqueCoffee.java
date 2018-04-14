@@ -33,7 +33,7 @@ public class BoutiqueCoffee {
 	}
 	catch (Exception Ex) {
 	  System.out.println("Error connecting to database.  Machine Error: " + Ex.toString());
-      Ex.printStackTrace();
+      //Ex.printStackTrace();
 	}
 	
 	//problem: I don't know when to close the connection
@@ -109,69 +109,93 @@ public class BoutiqueCoffee {
 	}
 	catch (Exception Ex) {
 	  System.out.println("Error adding Coffee: " + Ex.toString());
-      Ex.printStackTrace();
+      //Ex.printStackTrace();
 	}
 
 	
 	return out;
   }
 
-  public int offerCoffee(int storeId, int coffeeId) throws SQLException {
-    String query = "insert into OfferCoffee values(?. ?);";
+  public int offerCoffee(int storeId, int coffeeId) {
+	try {
+		String query = "insert into OfferCoffee values(?, ?)";
 
-    PreparedStatement insertStatement = connection.prepareStatement(query);
-    insertStatement.setInt(1, storeId);
-    insertStatement.setInt(2, coffeeId);
-    if(insertStatement.executeUpdate() > 0)
-        return 1;
-    else
-        return -1;
+		PreparedStatement insertStatement = connection.prepareStatement(query);
+		insertStatement.setInt(1, storeId);
+		insertStatement.setInt(2, coffeeId);
+		if(insertStatement.executeUpdate() > 0)
+			return 1;
+		else
+			return -1;
+	}
+	catch (Exception Ex) {
+		System.out.println("Error Adding Offer Coffee: " + Ex.toString());
+		return -1;
+	}
   }
 
-  public int addPromotion(String name, Date startDate, Date endDate) throws SQLException {
-      String query = "SELECT Promotion_seq.NEXTVAL from dual";
-      PreparedStatement insertStatement = connection.prepareStatement(query);
-      ResultSet rs = insertStatement.executeQuery();
+  public int addPromotion(String name, Date startDate, Date endDate) {
+	  try {
+		  String query = "SELECT Promotion_seq.NEXTVAL from dual";
+		  PreparedStatement insertStatement = connection.prepareStatement(query);
+		  ResultSet rs = insertStatement.executeQuery();
 
-      if(rs.next()){
-          int promoseq = rs.getInt(1);
-          query = "insert into Promotion values(?, ?, ?, ?);";
+		  if(rs.next()){
+			  int promoseq = rs.getInt(1);
+			  query = "insert into Promotion values(?, ?, ?, ?)";
 
-          insertStatement = connection.prepareStatement(query);
-          insertStatement.setInt(1, promoseq);
-          insertStatement.setString(2, name);
-          insertStatement.setDate(3, (java.sql.Date) startDate);
-          insertStatement.setDate(4, (java.sql.Date) endDate);
+			  insertStatement = connection.prepareStatement(query);
+			  insertStatement.setInt(1, promoseq);
+			  insertStatement.setString(2, name);
+			  insertStatement.setDate(3, convertSqltoJavaDate(startDate));
+			  insertStatement.setDate(4, convertSqltoJavaDate(endDate));
 
-          if(insertStatement.executeUpdate() > 0)
-              return promoseq;
-          else
-              return -1;
-      }
-      else
-          return -1;
+			  if(insertStatement.executeUpdate() > 0)
+				  return promoseq;
+			  else
+				  return -1;
+		  }
+		  else
+			  return -1;
+	  }
+	  catch (Exception Ex) {
+		  System.out.println("Error adding Promotion: " + Ex.toString());
+		  return -1;
+	  }
   }
 
-  public int promoteFor(int promotionId, int coffeeId) throws SQLException {
-      String query = "insert into PromoteFor values(?, ?);";
-      PreparedStatement insertStatement = connection.prepareStatement(query);
-      insertStatement.setInt(1, promotionId);
-      insertStatement.setInt(2, coffeeId);
-      if(insertStatement.executeUpdate() > 0)
-          return 1;
-      else
-          return -1;
+  public int promoteFor(int promotionId, int coffeeId) {
+	  try {
+		  String query = "insert into PromoteFor values(?, ?)";
+		  PreparedStatement insertStatement = connection.prepareStatement(query);
+		  insertStatement.setInt(1, promotionId);
+		  insertStatement.setInt(2, coffeeId);
+		  if(insertStatement.executeUpdate() > 0)
+			  return 1;
+		  else
+			  return -1;
+	  }
+	  catch (Exception Ex) {
+		  System.out.println("Error adding promoteFor: " + Ex.toString());
+		  return -1;
+	  }
   }
 
-  public int hasPromotion(int storeId, int promotionId) throws SQLException {
-      String query = "insert into HasPromotion values(?, ?);";
-      PreparedStatement insertStatement = connection.prepareStatement(query);
-      insertStatement.setInt(1, storeId);
-      insertStatement.setInt(2, promotionId);
-      if(insertStatement.executeUpdate() > 0)
-          return 1;
-      else
-          return -1;
+  public int hasPromotion(int storeId, int promotionId) {
+	  try {
+		String query = "insert into HasPromotion values(?, ?)";
+		PreparedStatement insertStatement = connection.prepareStatement(query);
+		insertStatement.setInt(1, storeId);
+		insertStatement.setInt(2, promotionId);
+		if(insertStatement.executeUpdate() > 0)
+			return 1;
+		else
+			return -1;
+	  }
+	  catch (Exception Ex) {
+		  System.out.println("Error adding hasPromotion: " + Ex.toString());
+		  return -1;
+	  }
   }
 
   public int addMemberLevel(String name, double boosterFactor) {
@@ -241,7 +265,9 @@ public class BoutiqueCoffee {
 	try {
 		
 		connection.setAutoCommit(false);
+		
 		connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+		//this probably should be changed, idk to what^^^
 		
 		String query = "select Purchase_seq.nextval from dual";
 		Statement stat = connection.createStatement();
@@ -289,8 +315,9 @@ public class BoutiqueCoffee {
 	catch (Exception Ex) {
 		System.out.println("Machine Failure: " + Ex.toString());
 		
+		return -1;
 	}
-	return -1;
+	
 	
   }
 
@@ -317,17 +344,27 @@ public class BoutiqueCoffee {
   //Use this for tests
   public static void main (String [] args) {
 	  BoutiqueCoffee test = new BoutiqueCoffee();
-	  int memLevel = test.addMemberLevel("TestLevel", 2);
-	  System.out.println(memLevel);
-	  
-	  int cust = test.addCustomer("TestFName", "TestLName", "TestMail", memLevel, 0);
-	  System.out.println(cust);
 	  
 	  int store = test.addStore("Test", "TestAdd", "TestType", 1, 2);
-	  System.out.println(store);
+	  System.out.println("Store ID: " + store);
 	  
 	  int cof = test.addCoffee("testCoffee", "good I guess", 1, 10, 10, 10);
-	  System.out.println(cof);
+	  System.out.println("Coffee ID: " + cof);
+	  
+	  System.out.println("offerCoffee success:" + test.offerCoffee(store, cof));
+	  
+	  int promo = test.addPromotion("TestPromo", new Date(100000), new Date());
+	  System.out.println("Promotion: " + promo);
+	  
+	  System.out.println("PromoteFor success: " + test.promoteFor(store, cof));
+	  
+	  System.out.println("hasPromotion success: " + test.hasPromotion(store, promo));
+	  
+	  int memLevel = test.addMemberLevel("TestLevel", 2);
+	  System.out.println("Member ID: " + memLevel);
+	  
+	  int cust = test.addCustomer("TestFName", "TestLName", "TestMail", memLevel, 0);
+	  System.out.println("Customer ID:" + cust);
 	  
 	  ArrayList<Integer> cofIds = new ArrayList<Integer>();
 	  cofIds.add(cof);
