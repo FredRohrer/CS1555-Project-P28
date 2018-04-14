@@ -1,7 +1,7 @@
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.sql.Date;
+import java.util.*;
 import java.sql.*;
+import java.util.Date;
 
 
 public class BoutiqueCoffee {
@@ -307,11 +307,105 @@ public class BoutiqueCoffee {
   }
 
   public List<Integer> getTopKStoresInPastXMonth(int k, int x) {
-    return new ArrayList<Integer>();
+      int days = x * 30;
+      String query = "SELECT CURRENT_DATEL FROM dual";
+      PreparedStatement insertStatement = null;
+
+      try {
+          insertStatement = connection.prepareStatement(query);
+          ResultSet rs = insertStatement.executeQuery();
+
+          if (rs.next()) {
+              java.util.Date curdate = rs.getDate(1);
+              Calendar cal = new GregorianCalendar();
+              cal.setTime(curdate);
+              cal.add(Calendar.DAY_OF_MONTH, days*-1);
+              java.util.Date past = cal.getTime();
+
+              query = "SELECT Store_Id FROM (" +
+                      "SELECT SUM(Price*Purchase_Quantity) FROM (" +
+                      "SELECT * FROM Coffee NATURAL JOIN (" +
+                      "SELECT * FROM BuyCoffee NATURAL JOIN (" +
+                      "SELECT * FROM Purchase WHERE Purchase_Time BETWEEN ? AND CURRENT_DATE)))" +
+                      "GROUP BY Store_ID)" +
+                      "ORDER BY val DESC " +
+                      "FETCH FIRST ? ROWS WITH TIES";
+
+              insertStatement = connection.prepareStatement(query);
+              insertStatement.setDate(1, (java.sql.Date) past);
+              insertStatement.setInt(2, k);
+
+              rs = insertStatement.executeQuery();
+
+              if(rs.next()){
+                  ArrayList<Integer> stores = new ArrayList<>();
+                  while (rs.next()){
+                      stores.add(rs.getInt(1));
+                  }
+                  return stores;
+              }
+              else {
+                  return new ArrayList<Integer>();
+              }
+
+          } else {
+              return new ArrayList<Integer>();
+          }
+      } catch (SQLException e) {
+          e.printStackTrace();
+          return new ArrayList<Integer>();
+      }
   }
 
   public List<Integer> getTopKCustomersInPastXMonth(int k, int x) {
-    return new ArrayList<Integer>();
+      int days = x * 30;
+      String query = "SELECT CURRENT_DATEL FROM dual";
+      PreparedStatement insertStatement = null;
+
+      try {
+          insertStatement = connection.prepareStatement(query);
+          ResultSet rs = insertStatement.executeQuery();
+
+          if (rs.next()) {
+              java.util.Date curdate = rs.getDate(1);
+              Calendar cal = new GregorianCalendar();
+              cal.setTime(curdate);
+              cal.add(Calendar.DAY_OF_MONTH, days*-1);
+              java.util.Date past = cal.getTime();
+
+              query = "SELECT Customer_Id FROM (" +
+                      "SELECT SUM(Price*Purchase_Quantity) FROM (" +
+                      "SELECT * FROM Coffee NATURAL JOIN (" +
+                      "SELECT * FROM BuyCoffee NATURAL JOIN (" +
+                      "SELECT * FROM Purchase WHERE Purchase_Time BETWEEN ? AND CURRENT_DATE)))" +
+                      "GROUP BY Customer_ID)" +
+                      "ORDER BY val DESC " +
+                      "FETCH FIRST ? ROWS WITH TIES";
+
+              insertStatement = connection.prepareStatement(query);
+              insertStatement.setDate(1, (java.sql.Date) past);
+              insertStatement.setInt(2, k);
+
+              rs = insertStatement.executeQuery();
+
+              if(rs.next()){
+                  ArrayList<Integer> stores = new ArrayList<>();
+                  while (rs.next()){
+                      stores.add(rs.getInt(1));
+                  }
+                  return stores;
+              }
+              else {
+                  return new ArrayList<Integer>();
+              }
+
+          } else {
+              return new ArrayList<Integer>();
+          }
+      } catch (SQLException e) {
+          e.printStackTrace();
+          return new ArrayList<Integer>();
+      }
   }
   
   //Use this for tests
