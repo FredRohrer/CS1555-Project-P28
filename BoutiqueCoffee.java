@@ -9,6 +9,8 @@ public class BoutiqueCoffee {
   private Connection connection;
   private Statement statement;
   private ResultSet resultSet;
+  private String query;  
+
   
   //Put your username and password for your particular database here
   private String username = "";
@@ -322,15 +324,97 @@ public class BoutiqueCoffee {
   }
 
   public List<Integer> getCoffees() {
-    return new ArrayList<Integer>();
+   List<Integer> coffees = new ArrayList<Integer>();
+
+    try {
+      query = "select coffee_id from coffee";
+
+      Statement statement = connection.createStatement();
+      ResultSet rs = statement.executeQuery(query);
+      int counter=1;
+
+       while(rs.next()) {
+          coffees.add(rs.getInt(1));
+          counter ++;
+        }
+        rs.close();
+    } 
+    catch(Exception Ex)  
+    {
+      System.out.println("Machine Error: " + Ex.toString());
+    }
+    finally{
+      try {
+        if (statement!=null) statement.close();
+      } catch (SQLException e) {
+        System.out.println("Cannot close Statement. Machine error: "+e.toString());
+      }
+    }
+    return coffees;
   }
 
   public List<Integer> getCoffeesByKeywords(String keyword1, String keyword2) {
-    return new ArrayList<Integer>();
+     List<Integer> coffees = new ArrayList<Integer>();
+
+    try {
+      query = "select coffee_id, name from coffee";
+
+      Statement statement = connection.createStatement();
+      ResultSet rs = statement.executeQuery(query);
+      int counter=1;
+      String name = "";
+
+       while(rs.next()) {
+        name = rs.getString(2);
+          if(name.contains(keyword1) && name.contains(keyword2)){
+            coffees.add(rs.getInt(1));
+          }
+          counter ++;
+        }
+        rs.close();
+    } 
+    catch(Exception Ex)  
+    {
+      System.out.println("Machine Error: " + Ex.toString());
+    }
+    finally{
+      try {
+        if (statement!=null) statement.close();
+      } catch (SQLException e) {
+        System.out.println("Cannot close Statement. Machine error: "+e.toString());
+      }
+    }
+    return coffees;
   }
 
   public double getPointsByCustomerId(int customerId) {
-    return -1;
+      double total_points = -1;
+      String c_id = String.valueOf(customerId);      
+    try {
+      query = "SELECT TOTAL_POINTS FROM CUSTOMER WHERE CUSTOMER_ID = "+c_id;
+      Statement statement = connection.createStatement();
+      ResultSet rs = statement.executeQuery(query);
+      int counter=1;
+       while(rs.next()) {
+          total_points = rs.getLong(1);
+          counter ++;
+        }
+
+        rs.close();
+    } 
+    catch(Exception Ex)  
+    {
+      System.out.println("Machine Error: " + Ex.toString());
+    }
+    finally{
+      try {
+        if (statement!=null) statement.close();
+      } catch (SQLException e) {
+        System.out.println("Cannot close Statement. Machine error: "+e.toString());
+      }
+    }
+
+    return total_points;
   }
 
   public List<Integer> getTopKStoresInPastXMonth(int k, int x) {
@@ -375,6 +459,25 @@ public class BoutiqueCoffee {
 	  System.out.println(test.addPurchase(cust, store, new Date(), cofIds, purchs, redeems));
 	  //should fail because the customer does not have enough redeem points
 	  
+	   System.out.println("CID 19 TOTAL POINTS:" + test.getPointsByCustomerId(1));
+
+	    System.out.println("GET COFFEE: COFEE_ID");
+	    List<Integer> c = test.getCoffees();
+	    for(Integer i : c){
+	      System.out.println(i);
+	    }
+	    /* should return same as above */
+	    System.out.println("GET COFFEE KEYWORD COFEE_ID");
+	    List<Integer> n = test.getCoffeesByKeywords("test", "Coffee");
+	    for(Integer i : n){
+	      System.out.println(i);
+	    }
+	    /* should return empty list */
+	    System.out.println("GET COFFEE KEYWORD COFEE_ID");
+	    List<Integer> d = test.getCoffeesByKeywords("test", "fancy");
+	    for(Integer i : d){
+	      System.out.println(i);
+	    }
   }
   
 }
