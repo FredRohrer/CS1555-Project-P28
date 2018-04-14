@@ -5,14 +5,37 @@ create or replace function Get_Coffee_Promoted
 (coffeeID in int, storeID in int, cur_date in date)
 	return boolean
 	is	
+		/*
 		cursor rst is (select *
 						from Promotion natural join HasPromotion natural join PromoteFor
 						where Store_ID = store_id and Coffee_ID = coffeeID and 
 						(cur_date between Start_Date and End_Date));
+		dump_values	RST%rowtype;*/
+		dump_it varchar2(1);
 	begin
-		
+		/*
 		open rst;
-		return rst%found;
+		fetch rst into dump_values;
+		if @@fetch_status  then	
+			return true;
+			else
+			return false;
+			end;
+			close rst;
+		*/
+		select dummy 
+		  into dump_it
+		  from dual
+		  where exists ( select 'x'
+						from Promotion natural join HasPromotion natural join PromoteFor
+						where Store_ID = store_id and Coffee_ID = coffeeID and 
+						(cur_date between Start_Date and End_Date));
+						
+		if (dump_it ='X') then 
+			return true;	
+		else 
+			return false;
+		end if;
 	end;
 /
 
@@ -78,5 +101,6 @@ create or replace trigger Update_Customer_Points
 	end;
 /
 
+	
 
 	
