@@ -14,6 +14,9 @@ public class BoutiqueCoffee {
   private String username = "";
   private String password = "";
   
+  private java.sql.Date convertSqltoJavaDate( Date jDate) {
+	  return new java.sql.Date(jDate.getTime()); 
+  }
   
   //Init, I think this is how it should work, but idk.
   //pretty sure its fine this way
@@ -171,57 +174,124 @@ public class BoutiqueCoffee {
           return -1;
   }
 
-  public int addMemberLevel(String name, double boosterFactor) throws SQLException {
-      String query = "SELECT MemberLevel_seq.NEXTVAL from dual";
-      PreparedStatement insertStatement = connection.prepareStatement(query);
-      ResultSet rs = insertStatement.executeQuery();
+  public int addMemberLevel(String name, double boosterFactor) {
+	  try {
+		  String query = "SELECT MemberLevel_seq.NEXTVAL from dual";
+		  PreparedStatement insertStatement = connection.prepareStatement(query);
+		  ResultSet rs = insertStatement.executeQuery();
 
-      if(rs.next()){
-          int memberseq = rs.getInt(1);
-          query = "insert into MemberLevel values(?, ?, ?);";
+		  if(rs.next()){
+			  int memberseq = rs.getInt(1);
+			  query = "insert into MemberLevel values(?, ?, ?)";
 
-          insertStatement = connection.prepareStatement(query);
-          insertStatement.setInt(1, memberseq);
-          insertStatement.setString(2, name);
-          insertStatement.setFloat(3, (float) boosterFactor);
+			  insertStatement = connection.prepareStatement(query);
+			  insertStatement.setInt(1, memberseq);
+			  insertStatement.setString(2, name);
+			  insertStatement.setFloat(3, (float) boosterFactor);
 
-          if(insertStatement.executeUpdate() > 0)
-              return memberseq;
-          else
-              return -1;
-      }
-      else
-          return -1;
+			  if(insertStatement.executeUpdate() > 0)
+				  return memberseq;
+			  else
+				  return -1;
+		  }
+		  else
+			  return -1;
+	  }
+	  catch (Exception Ex) {
+		System.out.println("MemberLevel Machine Error: " + Ex.toString());
+		return -1;
+	  }
   }
 
-  public int addCustomer(String firstName, String lastName, String email, int memberLevelId, double totalPoints) throws SQLException {
-      String query = "SELECT Customer_seq.NEXTVAL from dual";
-      PreparedStatement insertStatement = connection.prepareStatement(query);
-      ResultSet rs = insertStatement.executeQuery();
+  public int addCustomer(String firstName, String lastName, String email, int memberLevelId, double totalPoints) {
+	try {
+        String query = "SELECT Customer_seq.NEXTVAL from dual";
+        PreparedStatement insertStatement = connection.prepareStatement(query);
+        ResultSet rs = insertStatement.executeQuery();
 
-      if(rs.next()){
-          int customerseq = rs.getInt(1);
-          query = "insert into MemberLevel values(?, ?, ?, ?, ?, ?);";
+        if(rs.next()){
+            int customerseq = rs.getInt(1);
+            query = "insert into Customer values(?, ?, ?, ?, ?, ?)";
 
-          insertStatement = connection.prepareStatement(query);
-          insertStatement.setInt(1, customerseq);
-          insertStatement.setString(2, firstName);
-          insertStatement.setString(3, lastName);
-          insertStatement.setString(4, email);
-          insertStatement.setInt(5, memberLevelId);
-          insertStatement.setFloat(6, (float) totalPoints);
+            insertStatement = connection.prepareStatement(query);
+            insertStatement.setInt(1, customerseq);
+            insertStatement.setString(2, firstName);
+            insertStatement.setString(3, lastName);
+            insertStatement.setString(4, email);
+            insertStatement.setInt(5, memberLevelId);
+            insertStatement.setFloat(6, (float) totalPoints);
 
-          if(insertStatement.executeUpdate() > 0)
-              return customerseq;
-          else
-              return -1;
-      }
-      else
-          return -1;
+            if(insertStatement.executeUpdate() > 0)
+                return customerseq;
+            else
+                return -1;
+        }
+        else
+            return -1;
+	}
+	catch (Exception Ex) {
+		System.out.println("Machine Error: " + Ex.toString());
+		return -1;
+	}
   }
 
   public int addPurchase(int customerId, int storeId, Date purchaseTime, List<Integer> coffeeIds, List<Integer> purchaseQuantities, List<Integer> redeemQuantities) {
-    return -1;
+	  
+
+	try {
+		
+		connection.setAutoCommit(false);
+		connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+		
+		String query = "select Purchase_seq.nextval from dual";
+		Statement stat = connection.createStatement();
+		ResultSet rs = stat.executeQuery(query);
+		if (rs.next()){
+			int purchSeq = rs.getInt(1);
+			stat.close();
+			query = "insert into Purchase values (?, ?, ?, ?)";
+			PreparedStatement insertStatement = connection.prepareStatement(query);
+			insertStatement.setInt(1, purchSeq);
+			insertStatement.setInt(2, customerId);
+			insertStatement.setInt(3, storeId);
+			insertStatement.setDate(4, convertSqltoJavaDate(purchaseTime));
+			if (!(insertStatement.executeUpdate() > 0)) {
+				System.out.println("Failed to update Purchase");
+				connection.rollback();
+				return -1;
+			}
+			insertStatement.close();
+			query = "insert into BuyCoffee values (?, ?, ?, ?)";
+			
+			insertStatement = connection.prepareStatement(query);
+			for (int i = 0; i < coffeeIds.size(); i++) {
+				insertStatement.setInt(1, purchSeq);
+				insertStatement.setInt(2, coffeeIds.get(i));
+				insertStatement.setInt(3, purchaseQuantities.get(i));
+				insertStatement.setInt(4, redeemQuantities.get(i));
+				if (!(insertStatement.executeUpdate() > 0)) {
+					System.out.println("Failed to update BuyCoffee");
+					connection.rollback();
+					return -1;
+				}
+			}
+			insertStatement.close();
+			connection.commit();
+			return purchSeq;
+		}
+		else {
+			System.out.println("Failed to generate purchase id");
+			connection.rollback();
+			return -1;
+		}
+		
+	}
+	catch (Exception Ex) {
+		System.out.println("Machine Failure: " + Ex.toString());
+		
+	}
+	return -1;
+	
   }
 
   public List<Integer> getCoffees() {
@@ -247,8 +317,26 @@ public class BoutiqueCoffee {
   //Use this for tests
   public static void main (String [] args) {
 	  BoutiqueCoffee test = new BoutiqueCoffee();
-	  System.out.println(test.addStore("Test", "TestAdd", "TestType", 1, 2));
-	  System.out.println(test.addCoffee("testCoffee", "good I guess", 1, 10, 10, 10));
+	  int memLevel = test.addMemberLevel("TestLevel", 2);
+	  System.out.println(memLevel);
+	  
+	  int cust = test.addCustomer("TestFName", "TestLName", "TestMail", memLevel, 0);
+	  System.out.println(cust);
+	  
+	  int store = test.addStore("Test", "TestAdd", "TestType", 1, 2);
+	  System.out.println(store);
+	  
+	  int cof = test.addCoffee("testCoffee", "good I guess", 1, 10, 10, 10);
+	  System.out.println(cof);
+	  
+	  ArrayList<Integer> cofIds = new ArrayList<Integer>();
+	  cofIds.add(cof);
+	  ArrayList<Integer> purchs = new ArrayList<Integer>();
+	  purchs.add(0);
+	  ArrayList<Integer> redeems = new ArrayList<Integer>();
+	  redeems.add(1);
+	  System.out.println(test.addPurchase(cust, store, new Date(), cofIds, purchs, redeems));
+	  //should fail because the customer does not have enough redeem points
 	  
   }
   
