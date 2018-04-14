@@ -37,31 +37,80 @@ public class BoutiqueCoffee {
   }
   
   
-  public int addStore(String name, String address, String storeType, double gpsLong, double gpsLat) {
-	statement.setAutoCommit(false);
+  public int addStore(String name, String address, String storeType, long gpsLong, long gpsLat) {
+	//statement.setAutoCommit(false);
 	//not sure what the isolation should be for this one
 	//probably not that serious
 	//connection.setTransactionIsolation(?????);
+	int out = -1;
+	try {
+		//statement = connection.createStatement();
+		String query = "select Store_seq.NEXTVAL from dual";
+		Statement stat = connection.createStatement();
+		ResultSet rs = stat.executeQuery(query);
+		
+		if (rs.next()) {
+			int storeSeq = rs.getInt(1);
 	
+			query = "insert into STORE values(?, ?, ?, ?, ?, ?)";
+			//not sure how to deal with the store id
+			PreparedStatement insertStatement = connection.prepareStatement(query);
+			insertStatement.setInt(1, storeSeq);
+			insertStatement.setString(2, name);
+			insertStatement.setString(3, address);
+			insertStatement.setString(4, storeType);
+			insertStatement.setLong(5, gpsLong);
+			insertStatement.setLong(6, gpsLat);
+			if (insertStatement.executeUpdate() > 0) {
+				out = storeSeq;
+			}
+			stat.close();
+			insertStatement.close();
+		}
+		
+	}
+	catch (Exception Ex) {
+	  System.out.println("Error adding Store: " + Ex.toString());
+      //Ex.printStackTrace();
+	}
+
 	
-	//statement = connection.createStatement();
-	
-	String query = "insert into STORE values(Store_seq.NEXTVAL, ?, ?, ?, ?, ?);";
-	//not sure how to deal with the store id
-	PreparedStatement insertStatement = connection.prepareStatement(query);
-	insertStatement.setString(2, name);
-	insertStatement.setString(3, address);
-	insertStatement.setString(4, storeType);
-	insertStatement.setDouble(gpsLong);
-	insertStatement.setDouble(gpsLat);
-	
-	insertStatement.executeInsert();
-	
-    return -1;
+    return out;
   }
 
   public int addCoffee(String name, String description, int intensity, double price, double rewardPoints, double redeemPoints) {
-    return -1;
+    int out = -1;
+	try {
+		String query = "select Coffee_seq.NEXTVAL from dual";
+		Statement stat = connection.createStatement();
+		ResultSet rs = stat.executeQuery(query);
+		
+		if (rs.next()) {
+			int cofSeq = rs.getInt(1);
+			
+			query = "insert into Coffee values (?, ?, ?, ?, ?, ?, ?)";
+			PreparedStatement insertStatement = connection.prepareStatement(query);
+			insertStatement.setInt(1, cofSeq);
+			insertStatement.setString(2, name);
+			insertStatement.setString(3, description);
+			insertStatement.setInt(4, intensity);
+			insertStatement.setDouble(5, price);
+			insertStatement.setDouble(6, rewardPoints);
+			insertStatement.setDouble(7, redeemPoints);
+			if (insertStatement.executeUpdate() > 0) {
+				out = cofSeq;
+			}
+			stat.close();
+			insertStatement.close();
+		}
+	}
+	catch (Exception Ex) {
+	  System.out.println("Error adding Coffee: " + Ex.toString());
+      Ex.printStackTrace();
+	}
+
+	
+	return out;
   }
 
   public int offerCoffee(int storeId, int coffeeId) throws SQLException {
@@ -198,6 +247,9 @@ public class BoutiqueCoffee {
   //Use this for tests
   public static void main (String [] args) {
 	  BoutiqueCoffee test = new BoutiqueCoffee();
+	  System.out.println(test.addStore("Test", "TestAdd", "TestType", 1, 2));
+	  System.out.println(test.addCoffee("testCoffee", "good I guess", 1, 10, 10, 10));
+	  
   }
   
 }
