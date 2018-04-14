@@ -42,7 +42,7 @@ public class BoutiqueCoffee {
   }
   
   
-  public int addStore(String name, String address, String storeType, long gpsLong, long gpsLat) {
+  public int addStore(String name, String address, String storeType, double gpsLong, double gpsLat) {
 	//statement.setAutoCommit(false);
 	//not sure what the isolation should be for this one
 	//probably not that serious
@@ -64,8 +64,8 @@ public class BoutiqueCoffee {
 			insertStatement.setString(2, name);
 			insertStatement.setString(3, address);
 			insertStatement.setString(4, storeType);
-			insertStatement.setLong(5, gpsLong);
-			insertStatement.setLong(6, gpsLat);
+			insertStatement.setDouble(5, gpsLong);
+			insertStatement.setDouble(6, gpsLat);
 			if (insertStatement.executeUpdate() > 0) {
 				out = storeSeq;
 			}
