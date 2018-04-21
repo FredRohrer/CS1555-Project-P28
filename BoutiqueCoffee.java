@@ -354,10 +354,10 @@ public class BoutiqueCoffee {
     }
 
     public List<Integer> getCoffeesByKeywords(String keyword1, String keyword2) {
-        List<Integer> coffees = new ArrayList<Integer>();
+  	List<Integer> coffees = new ArrayList<Integer>();
 
         try {
-            query = "select coffee_id, name from coffee";
+            query = "select coffee_id, name from coffee where name like '%"+keyword1+"%' and name like '%"+keyword2+"%'  ";
 
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
@@ -366,9 +366,7 @@ public class BoutiqueCoffee {
 
             while(rs.next()) {
                 name = rs.getString(2);
-                if(name.contains(keyword1) && name.contains(keyword2)){
-                    coffees.add(rs.getInt(1));
-                }
+                coffees.add(rs.getInt(1));
                 counter ++;
             }
             rs.close();
