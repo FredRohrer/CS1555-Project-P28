@@ -349,6 +349,8 @@ public class BoutiqueCoffee {
 
             if(rs.next()){
                 int customerseq = rs.getInt(1);
+				insertStatement.close();
+				rs.close();
                 query = "insert into Customer values(?, ?, ?, ?, ?, ?)";
 
                 insertStatement = connection.prepareStatement(query);
@@ -363,6 +365,7 @@ public class BoutiqueCoffee {
                     out = customerseq;
                 else
                     out = -1;
+				insertStatement.close();
             }
             else
                 out = -1;
