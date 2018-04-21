@@ -15,10 +15,16 @@ public class BoutiqueCoffee {
     //Put your username and password for your particular database here
     private String username = "";
     private String password = "";
+	
+	//PreparedStatement insertStatement;
+	//Statement stat; 
+	//ResultSet rs;
 
     private java.sql.Date convertSqltoJavaDate( java.util.Date jDate) {
         return new java.sql.Date(jDate.getTime());
     }
+	
+	
 
     //Init, I think this is how it should work, but idk.
     //pretty sure its fine this way
@@ -40,6 +46,8 @@ public class BoutiqueCoffee {
 
         //problem: I don't know when to close the connection
     }
+	
+	
 
 
     public int addStore(String name, String address, String storeType, double gpsLong, double gpsLat) {
@@ -47,19 +55,23 @@ public class BoutiqueCoffee {
         //not sure what the isolation should be for this one
         //probably not that serious
         //connection.setTransactionIsolation(?????);
+		PreparedStatement insertStatement = null;
+		Statement stat = null; 
+		ResultSet rs = null;
         int out = -1;
+		
         try {
             //statement = connection.createStatement();
             String query = "select Store_seq.NEXTVAL from dual";
-            Statement stat = connection.createStatement();
-            ResultSet rs = stat.executeQuery(query);
+            stat = connection.createStatement();
+            rs = stat.executeQuery(query);
 
             if (rs.next()) {
                 int storeSeq = rs.getInt(1);
 
                 query = "insert into STORE values(?, ?, ?, ?, ?, ?)";
                 //not sure how to deal with the store id
-                PreparedStatement insertStatement = connection.prepareStatement(query);
+                insertStatement = connection.prepareStatement(query);
                 insertStatement.setInt(1, storeSeq);
                 insertStatement.setString(2, name);
                 insertStatement.setString(3, address);
@@ -78,6 +90,16 @@ public class BoutiqueCoffee {
             System.out.println("Error adding Store: " + Ex.toString());
             //Ex.printStackTrace();
         }
+		finally {
+			try {
+                if (rs != null) rs.close();
+				if (stat != null) stat.close();
+				if (insertStatement != null) insertStatement.close();
+            } catch (SQLException e) {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+		}
+		
 
 
         return out;
@@ -85,16 +107,19 @@ public class BoutiqueCoffee {
 
     public int addCoffee(String name, String description, int intensity, double price, double rewardPoints, double redeemPoints) {
         int out = -1;
+		PreparedStatement insertStatement = null;
+		Statement stat = null; 
+		ResultSet rs = null;
         try {
             String query = "select Coffee_seq.NEXTVAL from dual";
-            Statement stat = connection.createStatement();
-            ResultSet rs = stat.executeQuery(query);
+            stat = connection.createStatement();
+            rs = stat.executeQuery(query);
 
             if (rs.next()) {
                 int cofSeq = rs.getInt(1);
 
                 query = "insert into Coffee values (?, ?, ?, ?, ?, ?, ?)";
-                PreparedStatement insertStatement = connection.prepareStatement(query);
+                insertStatement = connection.prepareStatement(query);
                 insertStatement.setInt(1, cofSeq);
                 insertStatement.setString(2, name);
                 insertStatement.setString(3, description);
@@ -111,36 +136,65 @@ public class BoutiqueCoffee {
         }
         catch (Exception Ex) {
             System.out.println("Error adding Coffee: " + Ex.toString());
-            //Ex.printStackTrace();
+            //Ex.printStackTrace();'
+			out = -1;
         }
+		finally {
+			try {
+                if (rs != null) rs.close();
+				if (stat != null) stat.close();
+				if (insertStatement != null) insertStatement.close();
+            } catch (SQLException e) {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+		}
 
 
         return out;
     }
 
     public int offerCoffee(int storeId, int coffeeId) {
+		int out = -1;
+		PreparedStatement insertStatement = null;
+		Statement stat = null; 
+		ResultSet rs = null;
+		
         try {
             String query = "insert into OfferCoffee values(?, ?)";
 
-            PreparedStatement insertStatement = connection.prepareStatement(query);
+            insertStatement = connection.prepareStatement(query);
             insertStatement.setInt(1, storeId);
             insertStatement.setInt(2, coffeeId);
             if(insertStatement.executeUpdate() > 0)
-                return 1;
+                out = 1;
             else
-                return -1;
+                out = -1;
         }
         catch (Exception Ex) {
             System.out.println("Error Adding Offer Coffee: " + Ex.toString());
-            return -1;
+            out = -1;
         }
+		finally {
+			try {
+                //if (rs != null) rs.close();
+				//if (stat != null) stat.close();
+				if (insertStatement != null) insertStatement.close();
+            } catch (SQLException e) {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+		}
+		return out;
     }
 
     public int addPromotion(String name, Date startDate, Date endDate) {
+		int out = -1;
+		PreparedStatement insertStatement = null;
+		Statement stat = null; 
+		ResultSet rs = null;
         try {
             String query = "SELECT Promotion_seq.NEXTVAL from dual";
-            PreparedStatement insertStatement = connection.prepareStatement(query);
-            ResultSet rs = insertStatement.executeQuery();
+            insertStatement = connection.prepareStatement(query);
+            rs = insertStatement.executeQuery();
 
             if(rs.next()){
                 int promoseq = rs.getInt(1);
@@ -149,62 +203,106 @@ public class BoutiqueCoffee {
                 insertStatement = connection.prepareStatement(query);
                 insertStatement.setInt(1, promoseq);
                 insertStatement.setString(2, name);
-                insertStatement.setDate(3, convertSqltoJavaDate(startDate));
-                insertStatement.setDate(4, convertSqltoJavaDate(endDate));
+                insertStatement.setDate(3, startDate);
+                insertStatement.setDate(4, endDate);
 
                 if(insertStatement.executeUpdate() > 0)
-                    return promoseq;
+                    out = promoseq;
                 else
-                    return -1;
+                    out = -1;
             }
             else
-                return -1;
+                out = -1;
         }
         catch (Exception Ex) {
             System.out.println("Error adding Promotion: " + Ex.toString());
-            return -1;
+            out = -1;
         }
+		finally {
+			try {
+                if (rs != null) rs.close();
+				if (stat != null) stat.close();
+				if (insertStatement != null) insertStatement.close();
+            } catch (SQLException e) {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+		}
+		
+		return out;
     }
 
     public int promoteFor(int promotionId, int coffeeId) {
+		int out = -1;
+		PreparedStatement insertStatement = null;
+		Statement stat = null; 
+		ResultSet rs = null;
         try {
             String query = "insert into PromoteFor values(?, ?)";
-            PreparedStatement insertStatement = connection.prepareStatement(query);
+            insertStatement = connection.prepareStatement(query);
             insertStatement.setInt(1, promotionId);
             insertStatement.setInt(2, coffeeId);
             if(insertStatement.executeUpdate() > 0)
-                return 1;
+                out = 1;
             else
-                return -1;
+                out = -1;
         }
         catch (Exception Ex) {
             System.out.println("Error adding promoteFor: " + Ex.toString());
-            return -1;
+            out = -1;
         }
+		finally {
+			try {
+                if (rs != null) rs.close();
+				if (stat != null) stat.close();
+				if (insertStatement != null) insertStatement.close();
+            } catch (SQLException e) {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+		}
+		
+		return out;
     }
 
     public int hasPromotion(int storeId, int promotionId) {
+		int out = -1;
+		PreparedStatement insertStatement = null;
+		Statement stat = null; 
+		ResultSet rs = null;
         try {
             String query = "insert into HasPromotion values(?, ?)";
-            PreparedStatement insertStatement = connection.prepareStatement(query);
+            insertStatement = connection.prepareStatement(query);
             insertStatement.setInt(1, storeId);
             insertStatement.setInt(2, promotionId);
             if(insertStatement.executeUpdate() > 0)
-                return 1;
+                out = 1;
             else
-                return -1;
+                out = -1;
         }
         catch (Exception Ex) {
             System.out.println("Error adding hasPromotion: " + Ex.toString());
-            return -1;
+            out = -1;
         }
+		finally {
+			try {
+                if (rs != null) rs.close();
+				if (stat != null) stat.close();
+				if (insertStatement != null) insertStatement.close();
+            } catch (SQLException e) {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+		}
+		return out;
     }
 
     public int addMemberLevel(String name, double boosterFactor) {
+		int out = -1;
+		PreparedStatement insertStatement = null;
+		Statement stat = null; 
+		ResultSet rs = null;
         try {
             String query = "SELECT MemberLevel_seq.NEXTVAL from dual";
-            PreparedStatement insertStatement = connection.prepareStatement(query);
-            ResultSet rs = insertStatement.executeQuery();
+            insertStatement = connection.prepareStatement(query);
+            rs = insertStatement.executeQuery();
 
             if(rs.next()){
                 int memberseq = rs.getInt(1);
@@ -216,24 +314,38 @@ public class BoutiqueCoffee {
                 insertStatement.setFloat(3, (float) boosterFactor);
 
                 if(insertStatement.executeUpdate() > 0)
-                    return memberseq;
+                    out = memberseq;
                 else
-                    return -1;
+                    out = -1;
             }
             else
-                return -1;
+                out = -1;
         }
         catch (Exception Ex) {
             System.out.println("MemberLevel Machine Error: " + Ex.toString());
-            return -1;
+            out = -1;
         }
+		finally {
+			try {
+                if (rs != null) rs.close();
+				if (stat != null) stat.close();
+				if (insertStatement != null) insertStatement.close();
+            } catch (SQLException e) {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+		}
+		return out;
     }
 
     public int addCustomer(String firstName, String lastName, String email, int memberLevelId, double totalPoints) {
+		int out = -1;
+		PreparedStatement insertStatement = null;
+		Statement stat = null; 
+		ResultSet rs = null;
         try {
             String query = "SELECT Customer_seq.NEXTVAL from dual";
-            PreparedStatement insertStatement = connection.prepareStatement(query);
-            ResultSet rs = insertStatement.executeQuery();
+            insertStatement = connection.prepareStatement(query);
+            rs = insertStatement.executeQuery();
 
             if(rs.next()){
                 int customerseq = rs.getInt(1);
@@ -248,23 +360,36 @@ public class BoutiqueCoffee {
                 insertStatement.setFloat(6, (float) totalPoints);
 
                 if(insertStatement.executeUpdate() > 0)
-                    return customerseq;
+                    out = customerseq;
                 else
-                    return -1;
+                    out = -1;
             }
             else
-                return -1;
+                out = -1;
         }
         catch (Exception Ex) {
             System.out.println("Machine Error: " + Ex.toString());
-            return -1;
+            out = -1;
         }
+		finally {
+			try {
+                if (rs != null) rs.close();
+				if (stat != null) stat.close();
+				if (insertStatement != null) insertStatement.close();
+            } catch (SQLException e) {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+		}
+		return out;
+		
     }
 
     public int addPurchase(int customerId, int storeId, Date purchaseTime, List<Integer> coffeeIds, List<Integer> purchaseQuantities, List<Integer> redeemQuantities) {
-
-
-        try {
+		PreparedStatement insertStatement = null;
+		Statement stat = null; 
+		ResultSet rs = null;
+		int out = -1;
+        mainBlock: try {
 
             connection.setAutoCommit(false);
 
@@ -272,13 +397,14 @@ public class BoutiqueCoffee {
             //this probably should be changed, idk to what^^^
 
             String query = "select Purchase_seq.nextval from dual";
-            Statement stat = connection.createStatement();
-            ResultSet rs = stat.executeQuery(query);
+            stat = connection.createStatement();
+            rs = stat.executeQuery(query);
             if (rs.next()){
                 int purchSeq = rs.getInt(1);
+				rs.close();
                 stat.close();
                 query = "insert into Purchase values (?, ?, ?, ?)";
-                PreparedStatement insertStatement = connection.prepareStatement(query);
+                insertStatement = connection.prepareStatement(query);
                 insertStatement.setInt(1, purchSeq);
                 insertStatement.setInt(2, customerId);
                 insertStatement.setInt(3, storeId);
@@ -286,7 +412,9 @@ public class BoutiqueCoffee {
                 if (!(insertStatement.executeUpdate() > 0)) {
                     System.out.println("Failed to update Purchase");
                     connection.rollback();
-                    return -1;
+					insertStatement.close();
+                    out = -1;
+					break mainBlock;
                 }
                 insertStatement.close();
                 query = "insert into BuyCoffee values (?, ?, ?, ?)";
@@ -300,37 +428,50 @@ public class BoutiqueCoffee {
                     if (!(insertStatement.executeUpdate() > 0)) {
                         System.out.println("Failed to update BuyCoffee");
                         connection.rollback();
-                        return -1;
+						insertStatement.close();
+                        out = -1;
+						break mainBlock;
                     }
                 }
                 insertStatement.close();
                 connection.commit();
-                return purchSeq;
+                out = purchSeq;
             }
             else {
                 System.out.println("Failed to generate purchase id");
                 connection.rollback();
-                return -1;
+                out = -1;
             }
 
         }
         catch (Exception Ex) {
             System.out.println("Machine Failure: " + Ex.toString());
 
-            return -1;
+            out = -1;
         }
-
-
+		finally {
+			try {
+                if (rs != null) rs.close();
+				if (stat != null) stat.close();
+				if (insertStatement != null) insertStatement.close();
+            } catch (SQLException e) {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+		}
+	
+		return out;
     }
 
     public List<Integer> getCoffees() {
         List<Integer> coffees = new ArrayList<Integer>();
-
+		PreparedStatement insertStatement = null;
+		Statement stat = null; 
+		ResultSet rs = null;
         try {
             query = "select coffee_id from coffee";
 
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(query);
+            stat = connection.createStatement();
+            rs = stat.executeQuery(query);
             int counter=1;
 
             while(rs.next()) {
@@ -342,25 +483,36 @@ public class BoutiqueCoffee {
         catch(Exception Ex)
         {
             System.out.println("Machine Error: " + Ex.toString());
+			coffees = new ArrayList<Integer>();
         }
-        finally{
-            try {
-                if (statement!=null) statement.close();
+        finally {
+			try {
+				connection.setAutoCommit(true);
+                if (rs != null) rs.close();
+				if (stat != null) stat.close();
+				if (insertStatement != null) insertStatement.close();
             } catch (SQLException e) {
                 System.out.println("Cannot close Statement. Machine error: "+e.toString());
             }
-        }
+			
+		}
         return coffees;
     }
 
     public List<Integer> getCoffeesByKeywords(String keyword1, String keyword2) {
   	List<Integer> coffees = new ArrayList<Integer>();
-
+		PreparedStatement insertStatement = null;
+		Statement stat = null; 
+		ResultSet rs = null;
         try {
-            query = "select coffee_id, name from coffee where name like '%"+keyword1+"%' and name like '%"+keyword2+"%'  ";
-
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(query);
+			keyword1 = "%" + keyword1 + "%";
+			keyword2 = "%" + keyword2 + "%";
+            query = "select coffee_id, name from coffee where name like ? and name like ?";
+			
+            insertStatement = connection.prepareStatement(query);
+			insertStatement.setString(1, keyword1); 
+			insertStatement.setString(2, keyword2);
+            rs = insertStatement.executeQuery();
             int counter=1;
             String name = "";
 
@@ -374,30 +526,37 @@ public class BoutiqueCoffee {
         catch(Exception Ex)
         {
             System.out.println("Machine Error: " + Ex.toString());
+			coffees = new ArrayList<Integer>();
         }
-        finally{
-            try {
-                if (statement!=null) statement.close();
+        finally {
+			try {
+                if (rs != null) rs.close();
+				if (stat != null) stat.close();
+				if (insertStatement != null) insertStatement.close();
             } catch (SQLException e) {
                 System.out.println("Cannot close Statement. Machine error: "+e.toString());
             }
-        }
+		}
         return coffees;
     }
 
     public double getPointsByCustomerId(int customerId) {
         double total_points = -1;
         String c_id = String.valueOf(customerId);
+		PreparedStatement insertStatement = null;
+		Statement stat = null; 
+		ResultSet rs = null;
         try {
-            query = "SELECT TOTAL_POINTS FROM CUSTOMER WHERE CUSTOMER_ID = "+c_id;
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(query);
+            query = "SELECT TOTAL_POINTS FROM CUSTOMER WHERE CUSTOMER_ID = ?";
+            insertStatement = connection.prepareStatement(query);
+			insertStatement.setInt(1, customerId);
+            rs = insertStatement.executeQuery();
             int counter=1;
             while(rs.next()) {
                 total_points = rs.getLong(1);
                 counter ++;
             }
-
+			
             rs.close();
         }
         catch(Exception Ex)
@@ -406,7 +565,9 @@ public class BoutiqueCoffee {
         }
         finally{
             try {
-                if (statement!=null) statement.close();
+                if (rs != null) rs.close();
+				if (stat != null) stat.close();
+				if (insertStatement != null) insertStatement.close();
             } catch (SQLException e) {
                 System.out.println("Cannot close Statement. Machine error: "+e.toString());
             }
@@ -416,15 +577,20 @@ public class BoutiqueCoffee {
     }
 
     public List<Integer> getTopKStoresInPastXMonth(int k, int x) {
+		ArrayList<Integer> out = new ArrayList<Integer>();
         int days = x * 30;
         String query = "SELECT CURRENT_DATE FROM dual";
-
+		PreparedStatement insertStatement = null;
+		Statement stat = null; 
+		ResultSet rs = null;
         try {
-            PreparedStatement insertStatement = connection.prepareStatement(query);
-            ResultSet rs = insertStatement.executeQuery();
+            insertStatement = connection.prepareStatement(query);
+            rs = insertStatement.executeQuery();
 
             if (rs.next()) {
                 java.util.Date curdate = rs.getDate(1);
+				rs.close();
+				insertStatement.close();
                 Calendar cal = new GregorianCalendar();
                 cal.setTime(curdate);
                 cal.add(Calendar.DAY_OF_MONTH, days*-1);
@@ -466,21 +632,35 @@ public class BoutiqueCoffee {
                 return new ArrayList<Integer>();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            return new ArrayList<Integer>();
+            System.out.println("Machine Error: " + e.toString());
+            //return new ArrayList<Integer>();
         }
+		finally {
+			try {
+                if (rs != null) rs.close();
+				if (stat != null) stat.close();
+				if (insertStatement != null) insertStatement.close();
+            } catch (SQLException e) {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+		}
+		return out;
     }
 
     public List<Integer> getTopKCustomersInPastXMonth(int k, int x) {
         int days = x * 30;
         String query = "SELECT CURRENT_DATE FROM dual";
-
+		PreparedStatement insertStatement = null;
+		Statement stat = null; 
+		ResultSet rs = null;
         try {
-            PreparedStatement insertStatement = connection.prepareStatement(query);
-            ResultSet rs = insertStatement.executeQuery();
+            insertStatement = connection.prepareStatement(query);
+            rs = insertStatement.executeQuery();
 
             if (rs.next()) {
                 java.util.Date curdate = rs.getDate(1);
+				rs.close();
+				insertStatement.close();
                 Calendar cal = new GregorianCalendar();
                 cal.setTime(curdate);
                 cal.add(Calendar.DAY_OF_MONTH, days*-1);
@@ -523,8 +703,18 @@ public class BoutiqueCoffee {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ArrayList<Integer>();
+            //return new ArrayList<Integer>();
         }
+		finally {
+			try {
+                if (rs != null) rs.close();
+				if (stat != null) stat.close();
+				if (insertStatement != null) insertStatement.close();
+            } catch (SQLException e) {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+		}
+		return new ArrayList<Integer>(); 
     }
 
     //Use this for tests
@@ -538,13 +728,16 @@ public class BoutiqueCoffee {
         System.out.println("Coffee ID: " + cof);
 
         System.out.println("offerCoffee success:" + test.offerCoffee(store, cof));
+		Date date1 = new Date(0);
+		long mil = 96400000;
+		Date date2 = new Date(mil);
+		//System.out.println(date1 + " " + date2);
+        int promo = test.addPromotion("TestPromo", date1, date2);
+        System.out.println("Promotion: " + promo);
 
-        //int promo = test.addPromotion("TestPromo", new Date(100000), new Date());
-        //System.out.println("Promotion: " + promo);
+        System.out.println("PromoteFor success: " + test.promoteFor(promo, cof));
 
-        System.out.println("PromoteFor success: " + test.promoteFor(store, cof));
-
-        //System.out.println("hasPromotion success: " + test.hasPromotion(store, promo));
+        System.out.println("hasPromotion success: " + test.hasPromotion(store, promo));
 
         int memLevel = test.addMemberLevel("TestLevel", 2);
         System.out.println("Member ID: " + memLevel);
@@ -558,7 +751,7 @@ public class BoutiqueCoffee {
         purchs.add(0);
         ArrayList<Integer> redeems = new ArrayList<Integer>();
         redeems.add(1);
-        //System.out.println(test.addPurchase(cust, store, new Date(), cofIds, purchs, redeems));
+        System.out.println("Add purchase (should fail): " + test.addPurchase(cust, store, new Date(1), cofIds, purchs, redeems));
         //should fail because the customer does not have enough redeem points
 
         System.out.println("CID 19 TOTAL POINTS:" + test.getPointsByCustomerId(1));
