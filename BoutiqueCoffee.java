@@ -597,14 +597,15 @@ public class BoutiqueCoffee {
                 cal.add(Calendar.DAY_OF_MONTH, days*-1);
                 java.util.Date past = cal.getTime();
 
-                query = "SELECT Store_Id FROM (" +
-                        "SELECT Store_Id, SUM(Price*Purchase_Quantity) FROM (" +
-                        "SELECT * FROM Coffee NATURAL JOIN (" +
-                        "SELECT * FROM BuyCoffee NATURAL JOIN (" +
-                        "SELECT * FROM Purchase WHERE Purchase_Time BETWEEN ? AND CURRENT_DATE)))" +
-                        "GROUP BY Store_ID)" +
-                        "ORDER BY Store_ID DESC " +
-                        "FETCH FIRST ? ROWS WITH TIES";
+                query = "SELECT Store_Id FROM ( " + 
+							"SELECT Store_Id, SUM(Price*Purchase_Quantity) AS PURCHS " +
+							"FROM (Coffee NATURAL JOIN BuyCoffee) NATURAL JOIN ( " +
+								"SELECT * " + 
+								"FROM Purchase " +
+								"WHERE Purchase_Time BETWEEN ? AND CURRENT_DATE) " + 
+							"GROUP BY Store_Id " +
+							"ORDER BY PURCHS) " + 
+						"FETCH FIRST ? ROWS WITH TIES";
 
                 insertStatement = connection.prepareStatement(query);
                 insertStatement.setDate(1, (convertSqltoJavaDate(past)));
@@ -614,9 +615,9 @@ public class BoutiqueCoffee {
                 
                 if(rs.next()){
                     List<Integer> stores = new ArrayList<Integer>();
-                    while (rs.next()){
+                    do {
                         stores.add(rs.getInt(1));
-                    }
+                    } while (rs.next());
                     insertStatement.close();
                     rs.close();
                     return stores;
@@ -667,14 +668,15 @@ public class BoutiqueCoffee {
                 cal.add(Calendar.DAY_OF_MONTH, days*-1);
                 java.util.Date past = cal.getTime();
 
-                query = "SELECT Customer_Id FROM (" +
-                        "SELECT Customer_Id, SUM(Price*Purchase_Quantity) FROM (" +
-                        "SELECT * FROM Coffee NATURAL JOIN (" +
-                        "SELECT * FROM BuyCoffee NATURAL JOIN (" +
-                        "SELECT * FROM Purchase WHERE Purchase_Time BETWEEN ? AND CURRENT_DATE)))" +
-                        "GROUP BY Customer_Id)" +
-                        "ORDER BY Customer_Id DESC " +
-                        "FETCH FIRST ? ROWS WITH TIES";
+                query = "SELECT Customer_Id FROM ( " + 
+							"SELECT Customer_Id, SUM(Price*Purchase_Quantity) AS PURCHS " +
+							"FROM (Coffee NATURAL JOIN BuyCoffee) NATURAL JOIN ( " +
+								"SELECT * " + 
+								"FROM Purchase " +
+								"WHERE Purchase_Time BETWEEN ? AND CURRENT_DATE) " + 
+							"GROUP BY Customer_Id " +
+							"ORDER BY PURCHS) " + 
+						"FETCH FIRST ? ROWS WITH TIES";
 
                 insertStatement = connection.prepareStatement(query);
                 insertStatement.setDate(1, (convertSqltoJavaDate(past)));
@@ -684,9 +686,9 @@ public class BoutiqueCoffee {
 
                 if(rs.next()){
                     List<Integer> stores = new ArrayList<Integer>();
-                    while (rs.next()){
+                    do {
                         stores.add(rs.getInt(1));
-                    }
+                    } while (rs.next());
                     insertStatement.close();
                     rs.close();
                     return stores;
