@@ -113,7 +113,31 @@ public class BCBenchmark{
 			 System.out.println("Status: " + test.hasPromotion(promoID, storeID));
 		 }
 
+		 /* TEST getTopKStoresInPastXMonth */
+		 System.out.println("----STRESS TESTING: getTopKStoresInPastXMonth----");
+		 for(int j = 0; j < numberOfTests; j++){
+		     int k = rand.nextInt(100) + 1;
+		     int x = rand.nextInt(100) + 1;
+		     System.out.println("Getting top " + k + " stores in the past " + x + " months");
+             List<Integer> c = test.getTopKCustomersInPastXMonth(k, x);
+             System.out.println("\t\tSTORE_ID");
+             for(Integer i : c){
+                 System.out.println("\t\t"+i);
+             }
+         }
 
+         /* TEST getTopKCustomersInPastXMonth */
+         System.out.println("----STRESS TESTING: getTopKCustomersInPastXMonth----");
+         for(int j = 0; j < numberOfTests; j++){
+             int k = rand.nextInt(100) + 1;
+             int x = rand.nextInt(100) + 1;
+             System.out.println("Getting top " + k + " customers in the past " + x + " months");
+             List<Integer> c = test.getTopKCustomersInPastXMonth(k, x);
+             System.out.println("\t\tCUSTOMER_ID");
+             for(Integer i : c){
+                 System.out.println("\t\t"+i);
+             }
+         }
 
 
 
