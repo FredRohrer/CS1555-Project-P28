@@ -393,7 +393,7 @@ public class BoutiqueCoffee {
 
             connection.setAutoCommit(false);
 
-            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             //this probably should be changed, idk to what^^^
 
             String query = "select Purchase_seq.nextval from dual";
@@ -446,11 +446,12 @@ public class BoutiqueCoffee {
         }
         catch (Exception Ex) {
             System.out.println("Machine Failure: " + Ex.toString());
-
             out = -1;
+			
         }
 		finally {
 			try {
+				connection.rollback();
                 if (rs != null) rs.close();
 				if (stat != null) stat.close();
 				if (insertStatement != null) insertStatement.close();
@@ -751,8 +752,10 @@ public class BoutiqueCoffee {
         purchs.add(0);
         ArrayList<Integer> redeems = new ArrayList<Integer>();
         redeems.add(1);
+		 //should fail because the customer does not have enough redeem points
         System.out.println("Add purchase (should fail): " + test.addPurchase(cust, store, new Date(1), cofIds, purchs, redeems));
-        //should fail because the customer does not have enough redeem points
+       
+		System.out.println("Add purchase success: " + test.addPurchase(cust, store, new Date(1), cofIds, redeems, purchs));
 
         System.out.println("CID 19 TOTAL POINTS:" + test.getPointsByCustomerId(1));
 
