@@ -6,16 +6,37 @@ import java.sql.*;
 public class BCBenchmark{
 	 public static void main (String [] args) {
 	    BoutiqueCoffee test = new BoutiqueCoffee();
-	    int totalCustomers = 20;
-	    int numberOfTests = 100;
-	    /* coffee names for keyword test */
-	    String [] arr = {"Coffee", "fancy", "Tea", "Soda", "Latte", "Capuccino", "Milk", "Fake", "Water", "Bubble", "Green", "Expresso", "Americano","Colombian", "Arabic"};
+		int totalCustomers = 20;
+		int numberOfTests = 100;
+
+		String[] storeNames = {"BCoffee Mallowway", "BCoffee Highwell", "BCoffee Morwall", "BCoffee Bysummer", "BCoffee Newwolf" +
+								"BCoffee Wintershore", "BCoffee Greyice", "BCoffee Lochcourt", "BCoffee Silverwitch", "BCoffee Prybourne"};
+
+		String[] storeTypes = {"Full service", "Express", "Hybrid", "Drive Thru", "Truck", "Coffee Bar"};
+
+		double minLat = -90.00;
+		double maxLat = 90.00;
+		double minLon = 0.00;
+		double maxLon = 180.00;
+
+		/* TEST addStore */
+		System.out.println("----STRESS TESTING: addStore----");
+		for(int i = 0; i < numberOfTests; i++){
+			double lat = minLat + (double)(Math.random() * ((maxLat - minLat) + 1));
+			double lon = minLon + (double)(Math.random() * ((maxLon - minLon) + 1));
+			System.out.println("SID: " + test.addStore(storeNames[i % storeNames.length], "unlisted", storeTypes[i % storeTypes.length],
+														lat, lon));
+		}
 
 	    /* TEST getPointsByCustomerId */
 	    System.out.println("----STRESS TESTING: getPointsByCustomerId----");
 	    for(int j = 0; j < totalCustomers; j++){
 		    System.out.println("CID "+ String.valueOf(j) +" TOTAL POINTS:" + test.getPointsByCustomerId(j));
 		}
+
+		/* coffee names for keyword test */
+		 String [] arr = {"Coffee", "fancy", "Tea", "Soda", "Latte", "Capuccino", "Milk", "Fake", "Water", "Bubble", "Green", "Expresso", "Americano","Colombian", "Arabic"};
+
 	    /* TEST getCoffees */
 		for(int j = 4; j < numberOfTests; j++){
 		    System.out.println("----STRESS TESTING: getCoffees----");
@@ -42,7 +63,61 @@ public class BCBenchmark{
 		    }
 		}
 
-		// got ORA-01000: maximum open cursors exceeded
+		Random rand = new Random();
+
+		/*TEST offerCoffee */
+		 System.out.println("----STRESS TESTING: offerCoffee----");
+		 for(int i = 0; i < numberOfTests; i++){
+			int storeID = rand.nextInt(100) + 1;
+			int coffeeID = rand.nextInt(100) + 1;
+			System.out.println("Testing storeID " + storeID + " with coffeeID " + coffeeID);
+			System.out.println("Status: " + test.offerCoffee(storeID, coffeeID));
+		}
+
+		GregorianCalendar gc = new GregorianCalendar();
+
+		/*TEST addPromotion */
+		System.out.println("----STRESS TESTING: addPromotion----");
+		for(int i = 0; i < numberOfTests; i++){
+			long ms = -946771200000L + (Math.abs(rand.nextLong()) % (70L * 365 * 24 * 60 * 60 * 1000));
+			long ms2 = -946771200000L + (Math.abs(rand.nextLong()) % (70L * 365 * 24 * 60 * 60 * 1000));
+			Date dateStart;
+			Date dateEnd;
+
+			if(ms > ms2){
+				dateStart = new Date(ms2);
+				dateEnd	= new Date(ms);
+			}else{
+				dateStart = new Date(ms);
+				dateEnd = new Date(ms2);
+			}
+
+			System.out.println("PromoID: " + test.addPromotion("Promo" + i, dateStart, dateEnd));
+		}
+
+		/*TEST promoFor */
+		 System.out.println("----STRESS TESTING: promoFor----");
+		 for(int i = 0; i < numberOfTests; i++){
+			 int promoID = rand.nextInt(100) + 1;
+			 int coffeeID = rand.nextInt(100) + 1;
+			 System.out.println("Testing promoID " + promoID + " with coffeeID " + coffeeID);
+			 System.out.println("Status: " + test.promoteFor(promoID, coffeeID));
+		 }
+
+		 /*TEST hasPromotion */
+		 System.out.println("----STRESS TESTING: hasPromotion----");
+		 for(int i = 0; i < numberOfTests; i++){
+			 int promoID = rand.nextInt(100) + 1;
+			 int storeID = rand.nextInt(100) + 1;
+			 System.out.println("Testing promoID " + promoID + " with storeID " + storeID);
+			 System.out.println("Status: " + test.hasPromotion(promoID, storeID));
+		 }
+
+
+
+
+
+		 // got ORA-01000: maximum open cursors exceeded
 		// for(int j = 0; j < numberOfTests; j++){
 		//     /* should always return empty list */
 		//    	System.out.println("\t\tCOFEE_ID");
@@ -52,5 +127,7 @@ public class BCBenchmark{
 		//         System.out.println("\t\t"+i);
 		//     }
 		// }
+
+
 	}
 }
