@@ -36,6 +36,9 @@ create or replace function Get_Coffee_Promoted
 		else 
 			return false;
 		end if;
+		exception
+			when others then
+				return false;
 	end;
 /
 
