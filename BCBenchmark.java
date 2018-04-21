@@ -133,6 +133,20 @@ public class BCBenchmark{
 			 System.out.println("CID: " + test.addCustomer(first, last, "N/A", leve, points));
 		 }
 
+		 /* TEST addPurchase */
+		 ArrayList<Integer> redeems = new ArrayList<Integer>();
+		 redeems.add(0);
+		 ArrayList<Integer> purchs = new ArrayList<Integer>();
+		 purchs.add(1);
+		 List<Integer> cofIds =new ArrayList<Integer>();
+		 cofIds.add(2);
+		 for(int j = 1; j < numberOfTests; j++){
+			 purchs.add(rand.nextInt(100) + 1);
+			 redeems.add(rand.nextInt(100) + 1);
+			 cofIds.add(rand.nextInt(100) + 1);
+			 System.out.println("ADD PURCHASE: " + test.addPurchase(j%20, j%20, Date.valueOf("2018-04-20"), cofIds, purchs, redeems));
+		 }
+
 		 /* TEST getTopKStoresInPastXMonth */
 		 System.out.println("----STRESS TESTING: getTopKStoresInPastXMonth----");
 		 for(int j = 0; j < numberOfTests; j++){
@@ -159,15 +173,7 @@ public class BCBenchmark{
              }
          }
 
-        /* TEST addPurchase */
-		ArrayList<Integer> redeems = new ArrayList<Integer>();
-		redeems.add(0);
-		ArrayList<Integer> purchs = new ArrayList<Integer>();
-		purchs.add(1);
-		for(int j = 1; j < numberOfTests; j++){
-			List<Integer> cofIds = samplecoffees.get(j%samplecoffees.size());
-			System.out.println("ADD PURCHASE: " + test.addPurchase(j%20, j%20, Date.valueOf("2018-04-20"), cofIds, purchs, redeems));
-		}
+
 
 	}
 }
