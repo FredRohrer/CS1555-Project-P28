@@ -30,7 +30,7 @@ public class BCBenchmark{
 		        System.out.println("\t\t"+i);
 		    }
 		}
-
+		/* TEST getCoffeesByKeywords */
 		for(int j = 0; j < numberOfTests; j++){
 		    /* should return same as above */
 		    System.out.println("----STRESS TESTING: getCoffeesByKeywords----");
