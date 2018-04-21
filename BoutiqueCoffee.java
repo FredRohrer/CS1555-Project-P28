@@ -306,6 +306,9 @@ public class BoutiqueCoffee {
 
             if(rs.next()){
                 int memberseq = rs.getInt(1);
+				rs.close();
+				insertStatement.close();
+				
                 query = "insert into MemberLevel values(?, ?, ?)";
 
                 insertStatement = connection.prepareStatement(query);
@@ -317,6 +320,7 @@ public class BoutiqueCoffee {
                     out = memberseq;
                 else
                     out = -1;
+				insertStatement.close();
             }
             else
                 out = -1;
