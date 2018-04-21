@@ -113,6 +113,26 @@ public class BCBenchmark{
 			 System.out.println("Status: " + test.hasPromotion(promoID, storeID));
 		 }
 
+		 String memberLevel[] = {"bronze", "silver", "gold"};
+		 /*TEST addMemberLevel */
+		 System.out.println("----STRESS TESTING: addMemberLevel----");
+		 for(int i = 0; i < numberOfTests; i++){
+			 double boost = rand.nextDouble() * 4;
+			 System.out.println("Status: " + test.addMemberLevel(memberLevel[i%memberLevel.length] + i, boost));
+		 }
+
+		 String names[] = {"John", "Doe", "Jane", "Donald", "Clayton", "Jack", "Jill", "Mary", "Richards", "Kershaw",
+		 					"Castillo", "Luis", "Zack", "Reynaldo", "Garrett", "Jose", "Berrios", "Andrew", "Pam"};
+		 /*TEST addCustomer */
+		 System.out.println("----STRESS TESTING: addCustomer----");
+		 for(int i = 0; i < numberOfTests; i++){
+			 String first = names[rand.nextInt(names.length) % names.length];
+			 String last = names[rand.nextInt(names.length) % names.length];
+			 int leve = rand.nextInt(100) + 1;
+			 double points = rand.nextDouble() * 100;
+			 System.out.println("CID: " + test.addCustomer(first, last, "N/A", leve, points));
+		 }
+
 		 /* TEST getTopKStoresInPastXMonth */
 		 System.out.println("----STRESS TESTING: getTopKStoresInPastXMonth----");
 		 for(int j = 0; j < numberOfTests; j++){
