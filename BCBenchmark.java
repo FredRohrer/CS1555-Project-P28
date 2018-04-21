@@ -159,19 +159,15 @@ public class BCBenchmark{
              }
          }
 
-
-
-		 // got ORA-01000: maximum open cursors exceeded
-		// for(int j = 0; j < numberOfTests; j++){
-		//     /* should always return empty list */
-		//    	System.out.println("\t\tCOFEE_ID");
-		//    	System.out.println("checking for NON EXISTANT coffee: ");
-		//     List<Integer> d = test.getCoffeesByKeywords("test", "NOTSTORED");
-		//     for(Integer i : d){
-		//         System.out.println("\t\t"+i);
-		//     }
-		// }
-
+        /* TEST addPurchase */
+		ArrayList<Integer> redeems = new ArrayList<Integer>();
+		redeems.add(0);
+		ArrayList<Integer> purchs = new ArrayList<Integer>();
+		purchs.add(1);
+		for(int j = 1; j < numberOfTests; j++){
+			List<Integer> cofIds = samplecoffees.get(j%samplecoffees.size());
+			System.out.println("ADD PURCHASE: " + test.addPurchase(j%20, j%20, Date.valueOf("2018-04-20"), cofIds, purchs, redeems));
+		}
 
 	}
 }
